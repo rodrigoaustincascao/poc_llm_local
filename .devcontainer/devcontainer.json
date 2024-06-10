@@ -1,0 +1,35 @@
+{
+	"name": "Python 3",
+    "dockerComposeFile": "../.docker/docker-compose.yaml",
+    "service": "anaconda",
+    "workspaceFolder": "/opt/notebooks",
+    // Configure tool-specific properties.
+	"customizations": {
+		// Configure properties specific to VS Code.
+		"vscode": {
+			// Set *default* container specific settings.json values on container create.
+			"settings": { 
+				"python.defaultInterpreterPath": "/usr/local/bin/python",				
+				"python.formatting.autopep8Path": "/usr/local/py-utils/bin/autopep8",
+				"python.formatting.blackPath": "/usr/local/py-utils/bin/black",
+				"python.formatting.yapfPath": "/usr/local/py-utils/bin/yapf"
+
+			},
+			
+			// Add the IDs of extensions you want installed when the container is created.
+			"extensions": [
+				"ms-python.python",
+				"ms-python.vscode-pylance",
+				"njpwerner.autodocstring",
+				"ms-azuretools.vscode-docker",
+				"yzhang.markdown-all-in-one",
+				"ms-python.pylint",
+				"ms-toolsai.jupyter"
+			]
+		}
+	},
+	// Dependendo do projeto precisa executar apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
+	"postCreateCommand": "apt-get update && apt-get install ffmpeg libsm6 libxext6  -y && pip3 install -r ./.docker/requirements.txt"
+	
+
+}

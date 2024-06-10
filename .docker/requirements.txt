@@ -1,0 +1,25 @@
+python-dotenv
+pandas
+pandasai
+langchain
+langchain-openai
+langchain-community
+langchain_huggingface
+sentence_transformers
+langchainhub
+openai
+faiss-cpu
+wheel
+ollama
+chromadb
+bs4
+flask
+# fastembed
+pydantic
+pdfplumber
+unstructured[all-docs]
+unstructured-client 
+watermark
+ipython
+streamlit
+gradio
