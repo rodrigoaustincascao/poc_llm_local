@@ -1,4 +1,10 @@
 version: '3.8'
+# =======================
+# URLs 
+# Ollama = http://ollama:11434
+# Open Web UI = http://localhost:3000
+# Anything LLm = http://localhost:3001
+# =======================
 services:
   anaconda:
     image: continuumio/anaconda3
@@ -39,9 +45,57 @@ services:
       - "8000:8000"
     networks:
       - python-docker
+
+  anything-llm:
+    image: mintplexlabs/anythingllm
+    ports:
+      - "3001:3001"
+    environment:
+      - STORAGE_DIR=/app/server/storage
+      - LLM_PROVIDER=ollama
+      - OLLAMA_BASE_PATH=http://ollama:11434
+      - OLLAMA_MODEL_PREF=llama3
+      - OLLAMA_MODEL_TOKEN_LIMIT=4096
+      - EMBEDDING_ENGINE=ollama
+      - EMBEDDING_BASE_PATH=http://127.0.0.1:11434
+      - EMBEDDING_MODEL_PREF=nomic-embed-text:latest
+      - EMBEDDING_MODEL_MAX_CHUNK_LENGTH=8192
+      - VECTOR_DB=lancedb
+      - WHISPER_PROVIDER=local
+    volumes:
+      - anythingllm_storage:/app/server/storage
+      - ../anything-llm/.env:/app/server/.env
+    command: ["/bin/sh", "-c", "mkdir -p /app/server/storage && touch /app/server/.env && exec /app/server/start.sh"]
+    cap_add:
+      - SYS_ADMIN
+    networks:
+      - python-docker
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:ollama
+    container_name: open-webui
+    ports:
+      - "3000:8080"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    volumes:
+      - ollama:/root/.ollama
+      - open-webui:/app/backend/data
+    restart: always
+    networks:
+      - python-docker
+
+
   
 networks:
   python-docker:
     external: false
 volumes:
   ollama: {}
+  anythingllm_storage: {}
+  open-webui: {}
